@@ -6,6 +6,7 @@ import codecs
 import os.path
 import inflection
 import six
+import re
 
 import logging
 logger = logging.getLogger(__name__)
@@ -58,10 +59,12 @@ class ObjectBuilder(object):
         return self.mem_resolved[uri[7:]]
 
     def relative_file_resolver(self, uri):
-        path = os.path.join(self.basedir, uri[8:])
-        with codecs.open(path, 'r', 'utf-8') as fin:
-            result = json.loads(fin.read())
-        return result
+        uri_filtered = re.search(r'file:\/*(.+)', uri)
+        if uri_filtered:
+            path = os.path.join(self.basedir, uri_filtered.group(1))
+            with codecs.open(path, 'r', 'utf-8') as fin:
+                result = json.loads(fin.read())
+            return result
 
     def validate(self, obj):
         try:
