@@ -435,6 +435,9 @@ class ClassBuilder(object):
                 elif util.safe_issubclass(p, ProtocolBase):
                     parents.append(p)
 
+            if parents == []:
+                parents = list(parent)
+
             self.resolved[uri] = self._build_object(
                 uri,
                 clsdata,
